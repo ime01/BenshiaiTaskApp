@@ -42,10 +42,10 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
         viewModel.getPosts()
 
         postsAdapter = PostsAdapter{
-           // transitionToDetailView(it)
+            transitionToDetailView(it)
         }
 
-       // observeState()
+        observeState()
 
     }
 
