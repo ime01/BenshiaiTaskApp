@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cars_navigation.xml"
+    app:startDestination="@id/postsFragment">
+
+
+    <fragment
+        android:id="@+id/postsFragment"
+        android:name="com.example.benshiaitaskapp.ui.PostsFragment"
+        android:label="Posts"
+        tools:layout="@layout/fragment_posts2" >
+        <action
+            android:id="@+id/action_postsFragment_to_postsDetailFragment"
+            app:destination="@id/postsDetailFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/postsDetailFragment"
+        android:name="com.example.benshiaitaskapp.ui.PostsDetailFragment"
+        android:label="Posts Details"
+        tools:layout="@layout/fragment_posts_detail" />
+</navigation>
