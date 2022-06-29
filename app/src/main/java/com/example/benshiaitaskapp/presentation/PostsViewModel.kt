@@ -21,6 +21,9 @@ import javax.inject.Inject
 
 
 enum class  PostsApiStatus {LOADING, ERROR, DONE}
+enum class  AuthorApiStatus {LOADING, ERROR, DONE}
+enum class  CommentsApiStatus {LOADING, ERROR, DONE}
+
 
 @HiltViewModel
 class PostsListViewModel @Inject constructor(
@@ -33,81 +36,94 @@ class PostsListViewModel @Inject constructor(
     val commentsFromAPost = MutableLiveData<List<CommentInfo>>()
     val errorMessage = MutableStateFlow<String?>(null)
     val postNetworkStatus = MutableLiveData<PostsApiStatus>()
+    val authorNetworkStatus = MutableLiveData<AuthorApiStatus>()
+    val commentsNetworkStatus = MutableLiveData<CommentsApiStatus>()
 
 
-    fun getPosts(){
+    fun getPosts() {
 
-        getPostsUseCase.invoke().onEach { result->
+        viewModelScope.launch(Dispatchers.IO) {
 
-            when(result){
-                is  Resource.Success ->{
+            getPostsUseCase.invoke().onEach { result ->
 
-                    postNetworkStatus.value = PostsApiStatus.DONE
-                    postsFromNetwork.postValue(result.data!!)
+                when (result) {
+                    is Resource.Success -> {
+
+                        postNetworkStatus.value = PostsApiStatus.DONE
+                        postsFromNetwork.postValue(result.data!!)
+
+                    }
+                    is Resource.Error -> {
+                        postNetworkStatus.value = PostsApiStatus.ERROR
+                        errorMessage.value = result.message
+                    }
+
+                    is Resource.Loading -> {
+                        postNetworkStatus.value = PostsApiStatus.LOADING
+                    }
 
                 }
-                is Resource.Error ->{
-                    postNetworkStatus.value = PostsApiStatus.ERROR
-                    errorMessage.value = result.message
-                }
+            }.launchIn(viewModelScope)
+        }
 
-                is Resource.Loading->{
-                    postNetworkStatus.value = PostsApiStatus.LOADING
-                }
-
-            }
-        }.launchIn(viewModelScope)
     }
 
 
 
 
-    fun getAuthorInfo(userId:String){
+    fun getAuthorInfo(userId:String) {
 
-        getAuthorInfoUseCase.invoke(userId).onEach { result->
+        viewModelScope.launch(Dispatchers.IO) {
 
-            when(result){
-                is  Resource.Success ->{
+            getAuthorInfoUseCase.invoke(userId).onEach { result ->
 
-                    postNetworkStatus.value = PostsApiStatus.DONE
-                    authorInfoFromAPost.postValue(result.data!!)
+                when (result) {
+                    is Resource.Success -> {
+
+                        authorNetworkStatus.value = AuthorApiStatus.DONE
+                        authorInfoFromAPost.postValue(result.data!!)
+
+                    }
+                    is Resource.Error -> {
+                        authorNetworkStatus.value = AuthorApiStatus.ERROR
+                    }
+
+                    is Resource.Loading -> {
+                        authorNetworkStatus.value = AuthorApiStatus.LOADING
+                    }
 
                 }
-                is Resource.Error ->{
-                    postNetworkStatus.value = PostsApiStatus.ERROR
-                    errorMessage.value = result.message
-                }
-
-                is Resource.Loading->{
-                    postNetworkStatus.value = PostsApiStatus.LOADING
-                }
-
             }
-        }.launchIn(viewModelScope)
+        }
     }
 
 
-    fun getComments(postId:String){
+    fun getComments(postId:String) {
 
-        getCommentsUseCase.invoke(postId).onEach { result->
+        viewModelScope.launch(Dispatchers.IO) {
 
-            when(result){
-                is  Resource.Success ->{
+            getCommentsUseCase.invoke(postId).onEach { result ->
 
-                    postNetworkStatus.value = PostsApiStatus.DONE
-                    commentsFromAPost.postValue(result.data!!)
+                when (result) {
+                    is Resource.Success -> {
+
+                       commentsNetworkStatus.value = CommentsApiStatus.DONE
+                        commentsFromAPost.postValue(result.data!!)
+
+                    }
+                    is Resource.Error -> {
+                        commentsNetworkStatus.value = CommentsApiStatus.ERROR
+                        errorMessage.value = result.message
+                    }
+
+                    is Resource.Loading -> {
+                        commentsNetworkStatus.value = CommentsApiStatus.LOADING
+                    }
 
                 }
-                is Resource.Error ->{
-                    postNetworkStatus.value = PostsApiStatus.ERROR
-                    errorMessage.value = result.message
-                }
-
-                is Resource.Loading->{
-                    postNetworkStatus.value = PostsApiStatus.LOADING
-                }
-
             }
-        }.launchIn(viewModelScope)
+        }
     }
+
+
 }

@@ -5,6 +5,7 @@ import android.text.TextUtils
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -18,6 +19,8 @@ import com.example.benshiaitaskapp.R
 import com.example.benshiaitaskapp.adapter.PostsAdapter
 import com.example.benshiaitaskapp.databinding.FragmentPostsBinding
 import com.example.benshiaitaskapp.data.model.Post
+import com.example.benshiaitaskapp.presentation.AuthorApiStatus
+import com.example.benshiaitaskapp.presentation.CommentsApiStatus
 import com.example.benshiaitaskapp.presentation.PostsApiStatus
 import com.example.benshiaitaskapp.presentation.PostsListViewModel
 import com.example.benshiaitaskapp.utils.showSnackbar
@@ -33,6 +36,7 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
     private val binding get() = _binding!!
     private var errorMessage: String? = null
     lateinit var postsAdapter  : PostsAdapter
+    lateinit var snapHelper: SnapHelper
 
 
 
@@ -54,8 +58,11 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
         postsAdapter = PostsAdapter{
             transitionToDetailView(it)
         }
+        snapHelper  = LinearSnapHelper()
+        snapHelper.attachToRecyclerView(binding.rvList)
 
         setObservers()
+
 
     }
 
@@ -117,26 +124,18 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
 
         binding.apply {
 
-            viewModel.postNetworkStatus.observe(viewLifecycleOwner, Observer { state ->
+            viewModel.authorNetworkStatus.observe(viewLifecycleOwner, Observer { state ->
 
                 state?.also {
                     when (it) {
-                        PostsApiStatus.ERROR -> {
-
-                            errorMessage?.let { it1 -> showSnackbar(welcomeTextMarquee, it1) }
-
-                            errorImage.toggleVisibility(true)
-                            errorText.toggleVisibility(true)
+                        AuthorApiStatus.ERROR -> {
+                            //errorGettingAuthorInfo(it)
 
                         }
-                        PostsApiStatus.LOADING -> {
-
-                            shimmerFrameLayout.startShimmer()
-                            shimmerFrameLayout.toggleVisibility(true)
-
+                        AuthorApiStatus.LOADING -> {
                         }
 
-                        PostsApiStatus.DONE -> {
+                        AuthorApiStatus.DONE -> {
 
                         }
 
@@ -148,16 +147,20 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
 
     }
 
+    private fun errorGettingAuthorInfo(error:String) {
+        Toast.makeText(requireContext(), "Error Getting Author info  $error", Toast.LENGTH_SHORT).show()
+    }
+
 
     fun observeFetchCommentsState(){
 
         binding.apply {
 
-            viewModel.postNetworkStatus.observe(viewLifecycleOwner, Observer { state ->
+            viewModel.commentsNetworkStatus.observe(viewLifecycleOwner, Observer { state ->
 
                 state?.also {
                     when (it) {
-                        PostsApiStatus.ERROR -> {
+                        CommentsApiStatus.ERROR -> {
 
                             errorMessage?.let { it1 -> showSnackbar(welcomeTextMarquee, it1) }
 
@@ -165,14 +168,14 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
                             errorText.toggleVisibility(true)
 
                         }
-                        PostsApiStatus.LOADING -> {
+                        CommentsApiStatus.LOADING -> {
 
                             shimmerFrameLayout.startShimmer()
                             shimmerFrameLayout.toggleVisibility(true)
 
                         }
 
-                        PostsApiStatus.DONE -> {
+                        CommentsApiStatus.DONE -> {
 
                         }
 
@@ -229,15 +232,9 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
             val decoration = DividerItemDecoration(requireContext(), LinearLayout.VERTICAL)
             rvList.addItemDecoration(decoration)
 
-            val snapHelper: SnapHelper = LinearSnapHelper()
-            snapHelper.attachToRecyclerView(rvList)
-
             shimmerFrameLayout.stopShimmer()
             shimmerFrameLayout.toggleVisibility(false)
 
-            openMapView.setOnClickListener {
-               // Navigation.findNavController(requireView()).navigate(R.id.action_carsListFragment_to_mapFragment)
-            }
         }
 
     }
