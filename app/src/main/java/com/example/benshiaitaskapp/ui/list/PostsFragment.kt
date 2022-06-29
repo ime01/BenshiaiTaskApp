@@ -49,7 +49,7 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
         viewModel.getPosts()
 
         postsAdapter = PostsAdapter{
-           // transitionToDetailView(it)
+            transitionToDetailView(it)
         }
 
         observeState()
@@ -121,11 +121,10 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
         }
     }
 
-    private fun transitionToDetailView(car: Post) {
-
+    private fun transitionToDetailView(post: Post) {
         val action = PostsFragmentDirections.actionPostsFragmentToPostsDetailFragment()
-        //action. = car
-        //Navigation.findNavController(requireView()).navigate(action)
+        action.post = post
+        Navigation.findNavController(requireView()).navigate(action)
     }
 
 

@@ -1,8 +1,10 @@
 package com.example.benshiaitaskapp.data.model
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 
-
+@Parcelize
 data class Post(
     @SerializedName("body")
     val body: String?,
@@ -12,4 +14,4 @@ data class Post(
     val title: String?,
     @SerializedName("userId")
     val userId: Int?
-)
+): Parcelable
