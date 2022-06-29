@@ -11,5 +11,5 @@ interface PostsRepository {
 
     suspend fun getAuthorInfo(userId:String): AuthorInfo
 
-    suspend fun getComments(postId: String): CommentInfo
+    suspend fun getComments(postId: String): List<CommentInfo>
 }

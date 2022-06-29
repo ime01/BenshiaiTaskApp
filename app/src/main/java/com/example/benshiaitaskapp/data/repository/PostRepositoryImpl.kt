@@ -17,7 +17,7 @@ class PostRepositoryImpl @Inject constructor(private val api : ApiServiceCalls) 
         return api.getAuthorInfo(userId)
     }
 
-    override suspend fun getComments(postId: String): CommentInfo {
+    override suspend fun getComments(postId: String): List<CommentInfo> {
         return api.getComments(postId)
     }
 

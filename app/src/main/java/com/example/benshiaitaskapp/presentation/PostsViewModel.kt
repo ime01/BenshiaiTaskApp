@@ -30,7 +30,7 @@ class PostsListViewModel @Inject constructor(
 
     val postsFromNetwork = MutableLiveData<List<Post>>()
     val authorInfoFromAPost = MutableLiveData<AuthorInfo>()
-    val commentsFromAPost = MutableLiveData<CommentInfo>()
+    val commentsFromAPost = MutableLiveData<List<CommentInfo>>()
     val errorMessage = MutableStateFlow<String?>(null)
     val postNetworkStatus = MutableLiveData<PostsApiStatus>()
 

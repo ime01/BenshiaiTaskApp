@@ -18,5 +18,5 @@ interface ApiServiceCalls {
 
 
     @GET("comments")
-    suspend fun getComments(@Query("postId")postId: String) : CommentInfo
+    suspend fun getComments(@Query("postId")postId: String) : List<CommentInfo>
 }

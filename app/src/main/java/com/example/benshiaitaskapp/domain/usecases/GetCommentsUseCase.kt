@@ -13,10 +13,10 @@ import javax.inject.Inject
 class GetCommentsUseCase @Inject constructor (private val repository: PostsRepository) {
 
 
-    operator fun invoke (postId: String): Flow<Resource<CommentInfo>> = flow {
+    operator fun invoke (postId: String): Flow<Resource<List<CommentInfo>>> = flow {
 
         try {
-            emit(Resource.Loading<CommentInfo>())
+            emit(Resource.Loading<List<CommentInfo>>())
 
             val comments = repository.getComments(postId)
 
@@ -24,11 +24,11 @@ class GetCommentsUseCase @Inject constructor (private val repository: PostsRepos
 
         }catch (e:HttpException){
 
-            emit(Resource.Error<CommentInfo>(e.localizedMessage ?: "An unexpected error occurred"))
+            emit(Resource.Error<List<CommentInfo>>(e.localizedMessage ?: "An unexpected error occurred"))
 
         }catch (e: IOException){
 
-            emit(Resource.Error<CommentInfo>("Couldn't reach the server, Check your internet connection and try again"))
+            emit(Resource.Error<List<CommentInfo>>("Couldn't reach the server, Check your internet connection and try again"))
         }
     }
 }
