@@ -162,16 +162,8 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
                     when (it) {
                         CommentsApiStatus.ERROR -> {
 
-                            errorMessage?.let { it1 -> showSnackbar(welcomeTextMarquee, it1) }
-
-                            errorImage.toggleVisibility(true)
-                            errorText.toggleVisibility(true)
-
                         }
                         CommentsApiStatus.LOADING -> {
-
-                            shimmerFrameLayout.startShimmer()
-                            shimmerFrameLayout.toggleVisibility(true)
 
                         }
 
