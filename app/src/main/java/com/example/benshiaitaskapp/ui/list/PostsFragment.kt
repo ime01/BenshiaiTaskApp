@@ -35,6 +35,7 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
     lateinit var postsAdapter  : PostsAdapter
 
 
+
     private val viewModel: PostsListViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,9 +55,7 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
             transitionToDetailView(it)
         }
 
-        observeState()
-        getErrorMessage()
-
+        setObservers()
 
     }
 
@@ -70,7 +69,7 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
         }
     }
 
-    fun observeState(){
+    fun observeFetchPostsState(){
 
         binding.apply {
 
@@ -96,6 +95,10 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
                         PostsApiStatus.DONE -> {
 
                             viewModel.postsFromNetwork.observe(viewLifecycleOwner, Observer {
+
+                                    it.forEach {
+                                        fetchCommentsAndAuthorInfo(it.userId.toString(), it.id.toString() )
+                                    }
                                 loadRecyclerView(it)
                             })
 
@@ -107,6 +110,92 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
             })
         }
 
+    }
+
+
+    fun observeFetchAuthorInfoState(){
+
+        binding.apply {
+
+            viewModel.postNetworkStatus.observe(viewLifecycleOwner, Observer { state ->
+
+                state?.also {
+                    when (it) {
+                        PostsApiStatus.ERROR -> {
+
+                            errorMessage?.let { it1 -> showSnackbar(welcomeTextMarquee, it1) }
+
+                            errorImage.toggleVisibility(true)
+                            errorText.toggleVisibility(true)
+
+                        }
+                        PostsApiStatus.LOADING -> {
+
+                            shimmerFrameLayout.startShimmer()
+                            shimmerFrameLayout.toggleVisibility(true)
+
+                        }
+
+                        PostsApiStatus.DONE -> {
+
+                        }
+
+                    }
+                }
+
+            })
+        }
+
+    }
+
+
+    fun observeFetchCommentsState(){
+
+        binding.apply {
+
+            viewModel.postNetworkStatus.observe(viewLifecycleOwner, Observer { state ->
+
+                state?.also {
+                    when (it) {
+                        PostsApiStatus.ERROR -> {
+
+                            errorMessage?.let { it1 -> showSnackbar(welcomeTextMarquee, it1) }
+
+                            errorImage.toggleVisibility(true)
+                            errorText.toggleVisibility(true)
+
+                        }
+                        PostsApiStatus.LOADING -> {
+
+                            shimmerFrameLayout.startShimmer()
+                            shimmerFrameLayout.toggleVisibility(true)
+
+                        }
+
+                        PostsApiStatus.DONE -> {
+
+                        }
+
+                    }
+                }
+
+            })
+        }
+
+    }
+
+    fun fetchCommentsAndAuthorInfo(userId:String, postId:String){
+
+        if (!userId.isEmpty())viewModel.getAuthorInfo(userId)
+        if (!postId.isEmpty())viewModel.getComments(postId)
+
+    }
+
+    fun setObservers(){
+        observeFetchPostsState()
+        observeFetchAuthorInfoState()
+        observeFetchCommentsState()
+        getErrorMessage()
     }
 
 
