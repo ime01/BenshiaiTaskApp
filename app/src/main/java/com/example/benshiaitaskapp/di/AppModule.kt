@@ -1,7 +1,9 @@
 package com.example.benshiaitaskapp.di
 
 
-import com.example.benshiaitaskapp.network.ApiServiceCalls
+import com.example.benshiaitaskapp.data.repository.PostRepositoryImpl
+import com.example.benshiaitaskapp.domain.repository.PostsRepository
+import com.example.benshiaitaskapp.data.remote.ApiServiceCalls
 import com.example.benshiaitaskapp.utils.Constants
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
@@ -39,6 +41,13 @@ object AppModule {
     @Singleton
     fun providesApi(retrofit: Retrofit): ApiServiceCalls =
         retrofit.create(ApiServiceCalls::class.java)
+
+
+    @Provides
+    @Singleton
+    fun providesPostsRepository(api: ApiServiceCalls): PostsRepository {
+        return PostRepositoryImpl(api)
+    }
 
 
 

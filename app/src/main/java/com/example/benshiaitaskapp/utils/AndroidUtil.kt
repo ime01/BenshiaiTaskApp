@@ -15,9 +15,18 @@ fun AppCompatActivity.showToast(message: String) {
 }
 
 fun showSnackbar(view: View, string: String) {
+    Snackbar.make(view, string, Snackbar.LENGTH_LONG).show()
+}
 
-        Snackbar.make(view, string, Snackbar.LENGTH_LONG).show()
+fun View?.toggleVisibility(show: Boolean){
+    if(show){
+        if(this?.visibility != View.VISIBLE)
+            this?.visibility = View.VISIBLE
+    }else{
+        if(this?.visibility == View.VISIBLE)
+            this.visibility = View.GONE
     }
+}
 
 
 @Suppress("DEPRECATION")

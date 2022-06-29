@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.ListAdapter
 import com.example.benshiaitaskapp.R
 import com.example.benshiaitaskapp.databinding.CarListItemBinding
-import com.example.benshiaitaskapp.model.Post
+import com.example.benshiaitaskapp.data.model.Post
 
 
 typealias urlListener = (item: Post) -> Unit
@@ -33,9 +33,9 @@ class PostsAdapter  (val listener: urlListener)  :ListAdapter<Post, PostsAdapter
         holder.binding.apply {
 
             holder.itemView.apply {
-                userName.text = "Name: ${currentItem.title}"
-                make.text = "Car Make: ${currentItem.userId}"
-                fuelLevel.text = " Fuel Level: ${currentItem.body?.take(100)}"
+                userName.text = "Title: ${currentItem.title?.take(20)}"
+                body.text = "Body: ${currentItem.body?.take(100)}"
+                //fuelLevel.text = "Post id: ${currentItem.id}"
 
               /*  val imageLink = currentItem?.carImageUrl
 

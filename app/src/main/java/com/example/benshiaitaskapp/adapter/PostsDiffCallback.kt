@@ -1,7 +1,7 @@
 package com.example.benshiaitaskapp.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.benshiaitaskapp.model.Post
+import com.example.benshiaitaskapp.data.model.Post
 
 
 class PostsDiffCallback : DiffUtil.ItemCallback<Post>(){

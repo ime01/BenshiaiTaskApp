@@ -1,8 +1,7 @@
-package com.example.benshiaitaskapp.model
+package com.example.benshiaitaskapp.data.model
 import com.google.gson.annotations.SerializedName
 
 
-data class PostsList(val hits: List<Post>)
 
 data class Post(
     @SerializedName("body")
