@@ -13,5 +13,7 @@ data class Post(
     @SerializedName("title")
     val title: String?,
     @SerializedName("userId")
-    val userId: Int?
+    val userId: Int?,
+    val authorName: String? = null,
+    val totalPostComments: String? = null,
 ): Parcelable

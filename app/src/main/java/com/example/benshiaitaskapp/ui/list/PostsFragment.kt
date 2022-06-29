@@ -12,6 +12,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.SnapHelper
 import com.example.benshiaitaskapp.R
 import com.example.benshiaitaskapp.adapter.PostsAdapter
 import com.example.benshiaitaskapp.databinding.FragmentPostsBinding
@@ -137,6 +139,9 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
             rvList.adapter = postsAdapter
             val decoration = DividerItemDecoration(requireContext(), LinearLayout.VERTICAL)
             rvList.addItemDecoration(decoration)
+
+            val snapHelper: SnapHelper = LinearSnapHelper()
+            snapHelper.attachToRecyclerView(rvList)
 
             shimmerFrameLayout.stopShimmer()
             shimmerFrameLayout.toggleVisibility(false)
