@@ -1,5 +1,7 @@
 package com.example.benshiaitaskapp.data.model
 import android.os.Parcelable
+import com.example.benshiaitaskapp.data.model.authorinfo.AuthorInfo
+import com.example.benshiaitaskapp.data.model.comments.CommentInfo
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
@@ -14,6 +16,6 @@ data class Post(
     val title: String?,
     @SerializedName("userId")
     val userId: Int?,
-    val authorName: String? = null,
-    val totalPostComments: String? = null,
+    var authorInfo: AuthorInfo? = null,
+    var commentInfo: List<CommentInfo>? = null,
 ): Parcelable

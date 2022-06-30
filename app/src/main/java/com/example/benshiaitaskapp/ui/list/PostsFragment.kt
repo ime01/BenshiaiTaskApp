@@ -19,6 +19,8 @@ import com.example.benshiaitaskapp.R
 import com.example.benshiaitaskapp.adapter.PostsAdapter
 import com.example.benshiaitaskapp.databinding.FragmentPostsBinding
 import com.example.benshiaitaskapp.data.model.Post
+import com.example.benshiaitaskapp.data.model.authorinfo.AuthorInfo
+import com.example.benshiaitaskapp.data.model.comments.CommentInfo
 import com.example.benshiaitaskapp.presentation.AuthorApiStatus
 import com.example.benshiaitaskapp.presentation.CommentsApiStatus
 import com.example.benshiaitaskapp.presentation.PostsApiStatus
@@ -37,14 +39,11 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
     private var errorMessage: String? = null
     lateinit var postsAdapter  : PostsAdapter
     lateinit var snapHelper: SnapHelper
-
+    private var postsWithCommentsandAuthorInfo = listOf<Post>()
 
 
     private val viewModel: PostsListViewModel by activityViewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -102,7 +101,7 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
                         PostsApiStatus.DONE -> {
 
                             viewModel.postsFromNetwork.observe(viewLifecycleOwner, Observer {
-
+                                postsWithCommentsandAuthorInfo = it
                                     it.forEach {
                                         fetchCommentsAndAuthorInfo(it.userId.toString(), it.id.toString() )
                                     }
@@ -137,6 +136,15 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
 
                         AuthorApiStatus.DONE -> {
 
+
+                            viewModel.authorInfoFromAPost.observe(viewLifecycleOwner, Observer {author->
+
+                                postsWithCommentsandAuthorInfo.forEach {
+                                    if (it.userId == author.id) it.authorInfo = author
+                                }
+
+                            })
+
                         }
 
                     }
@@ -169,6 +177,21 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
 
                         CommentsApiStatus.DONE -> {
 
+                            viewModel.commentsFromAPost.observe(viewLifecycleOwner, Observer {allcommentInfo->
+
+                                allcommentInfo.forEach {oneCommentInfo->
+
+                                    postsWithCommentsandAuthorInfo.forEach { onePost->
+                                        if (onePost.id == oneCommentInfo.postId) onePost.commentInfo = allcommentInfo
+                                    }
+                                }
+
+
+
+                            })
+
+
+
                         }
 
                     }
@@ -191,6 +214,7 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
         observeFetchAuthorInfoState()
         observeFetchCommentsState()
         getErrorMessage()
+        loadRecyclerView(postsWithCommentsandAuthorInfo)
     }
 
 

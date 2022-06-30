@@ -40,9 +40,10 @@ class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail) {
                 dinnerCleanliness.text = "UserId :  ${userId}"
                 dseries.text = "Id :  ${id}"
 
-              /*  dmodelName.text = "Model Name :  ${modelName}"
-                dmake.text = "Make :  ${make}"
-                dlongitude.text = "Longitude :  ${longitude}"
+                dmodelName.text = "Total Comments :  ${commentInfo?.size}"
+                dmake.text = "Author Name :  ${authorInfo?.name}"
+
+              /*  dlongitude.text = "Longitude :  ${longitude}"
                 dlatitude.text = "Latitude :  ${latitude}"
                 dgroup.text = "Group :  ${group}"
                 dfuelLevel.text = "Fuel Level :  ${fuelLevel}"*/

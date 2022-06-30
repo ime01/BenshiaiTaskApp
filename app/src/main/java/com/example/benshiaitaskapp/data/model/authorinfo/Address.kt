@@ -1,8 +1,11 @@
 package com.example.benshiaitaskapp.data.model.authorinfo
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Address(
     @SerializedName("city")
     val city: String?,
@@ -14,4 +17,4 @@ data class Address(
     val suite: String?,
     @SerializedName("zipcode")
     val zipcode: String?
-)
+): Parcelable
