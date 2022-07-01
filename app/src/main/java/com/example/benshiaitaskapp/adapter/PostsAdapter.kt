@@ -4,9 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.ListAdapter
+import coil.load
 import com.example.benshiaitaskapp.R
 import com.example.benshiaitaskapp.data.model.Post
 import com.example.benshiaitaskapp.databinding.PostListItemBinding
+import com.example.benshiaitaskapp.utils.HashUtils.sha256
+import java.util.Objects.hash
 
 
 typealias urlListener = (item: Post) -> Unit
@@ -48,14 +51,18 @@ class PostsAdapter  (val listener: urlListener)  :ListAdapter<Post, PostsAdapter
                 }
 
 
-              /*  val imageLink = currentItem?.carImageUrl
+                val imageLink = currentItem?.title
+                val hashedLinkForSeed = imageLink?.let { sha256(it) }
+                val getImageUrl = "https://picsum.photos/seed/$hashedLinkForSeed/200/200"
 
-                imageThumbail.load(imageLink){
-                    error(R.drawable.bmw)
-                    placeholder(R.drawable.bmw)
+                println("HASHED VALUE :  $hashedLinkForSeed")
+
+                imageThumbail.load(getImageUrl){
+                    error(R.drawable.ic_baseline_chat_24)
+                    placeholder(R.drawable.ic_baseline_chat_24)
                     crossfade(true)
                     crossfade(1000)
-                }*/
+                }
             }
         }
     }

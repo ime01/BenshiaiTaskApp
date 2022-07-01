@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
+import java.security.MessageDigest
 
 
 fun AppCompatActivity.showToast(message: String) {
