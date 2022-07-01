@@ -14,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -42,15 +43,16 @@ class PostsListViewModel @Inject constructor(
 
     fun getPosts() {
 
-        viewModelScope.launch(Dispatchers.IO) {
-
             getPostsUseCase.invoke().onEach { result ->
 
                 when (result) {
                     is Resource.Success -> {
 
                         postNetworkStatus.value = PostsApiStatus.DONE
-                        postsFromNetwork.postValue(result.data!!)
+
+                        withContext(Dispatchers.IO) {
+                            postsFromNetwork.postValue(result.data!!)
+                        }
 
                     }
                     is Resource.Error -> {
@@ -64,7 +66,6 @@ class PostsListViewModel @Inject constructor(
 
                 }
             }.launchIn(viewModelScope)
-        }
 
     }
 
@@ -73,15 +74,16 @@ class PostsListViewModel @Inject constructor(
 
     fun getAuthorInfo(userId:String) {
 
-        viewModelScope.launch(Dispatchers.IO) {
-
             getAuthorInfoUseCase.invoke(userId).onEach { result ->
 
                 when (result) {
                     is Resource.Success -> {
 
                         authorNetworkStatus.value = AuthorApiStatus.DONE
-                        authorInfoFromAPost.postValue(result.data!!)
+
+                        withContext(Dispatchers.IO) {
+                            authorInfoFromAPost.postValue(result.data!!)
+                        }
 
                     }
                     is Resource.Error -> {
@@ -93,14 +95,11 @@ class PostsListViewModel @Inject constructor(
                     }
 
                 }
-            }
-        }
+            }.launchIn(viewModelScope)
     }
 
 
     fun getComments(postId:String) {
-
-        viewModelScope.launch(Dispatchers.IO) {
 
             getCommentsUseCase.invoke(postId).onEach { result ->
 
@@ -108,7 +107,11 @@ class PostsListViewModel @Inject constructor(
                     is Resource.Success -> {
 
                        commentsNetworkStatus.value = CommentsApiStatus.DONE
-                        commentsFromAPost.postValue(result.data!!)
+
+                        withContext(Dispatchers.IO) {
+                            commentsFromAPost.postValue(result.data!!)
+                        }
+
 
                     }
                     is Resource.Error -> {
@@ -121,9 +124,7 @@ class PostsListViewModel @Inject constructor(
                     }
 
                 }
-            }
+            }.launchIn(viewModelScope)
         }
-    }
-
 
 }

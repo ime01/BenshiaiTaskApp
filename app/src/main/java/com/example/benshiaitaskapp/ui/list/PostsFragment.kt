@@ -2,6 +2,7 @@ package com.example.benshiaitaskapp.ui.list
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.LinearLayout
@@ -25,6 +26,7 @@ import com.example.benshiaitaskapp.presentation.AuthorApiStatus
 import com.example.benshiaitaskapp.presentation.CommentsApiStatus
 import com.example.benshiaitaskapp.presentation.PostsApiStatus
 import com.example.benshiaitaskapp.presentation.PostsListViewModel
+import com.example.benshiaitaskapp.utils.getConnectionType
 import com.example.benshiaitaskapp.utils.showSnackbar
 import com.example.benshiaitaskapp.utils.toggleVisibility
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,7 +41,7 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
     private var errorMessage: String? = null
     lateinit var postsAdapter  : PostsAdapter
     lateinit var snapHelper: SnapHelper
-    private var postsWithCommentsandAuthorInfo = listOf<Post>()
+    private var postsWithCommentsandAuthorInfo = mutableListOf<Post>()
 
 
     private val viewModel: PostsListViewModel by activityViewModels()
@@ -52,7 +54,12 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
 
         showWelcomeMarqueeText()
 
-        viewModel.getPosts()
+        if (getConnectionType(requireContext())) {
+            if (postsWithCommentsandAuthorInfo.isNullOrEmpty())viewModel.getPosts()
+        } else {
+            showSnackbar(binding.rvList,  getString(R.string.ensure_internet))
+        }
+
 
         postsAdapter = PostsAdapter{
             transitionToDetailView(it)
@@ -61,8 +68,6 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
         snapHelper.attachToRecyclerView(binding.rvList)
 
         setObservers()
-
-
     }
 
     private fun getErrorMessage() {
@@ -101,12 +106,15 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
                         PostsApiStatus.DONE -> {
 
                             viewModel.postsFromNetwork.observe(viewLifecycleOwner, Observer {
-                                postsWithCommentsandAuthorInfo = it
-                                    it.forEach {
-                                        fetchCommentsAndAuthorInfo(it.userId.toString(), it.id.toString() )
-                                    }
+                                postsWithCommentsandAuthorInfo.addAll(it)
+
                                 loadRecyclerView(it)
                             })
+
+                            postsWithCommentsandAuthorInfo.forEach {
+                                fetchCommentsAndAuthorInfo(it.userId.toString(), it.id.toString() )
+                                Toast.makeText(requireContext(), "COMMENTS FETCHED", Toast.LENGTH_SHORT).show()
+                            }
 
                         }
 
@@ -136,8 +144,10 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
 
                         AuthorApiStatus.DONE -> {
 
-
                             viewModel.authorInfoFromAPost.observe(viewLifecycleOwner, Observer {author->
+
+                                println("Author Gotten ${author}")
+                                Log.d("Author Gotten"," ${author}")
 
                                 postsWithCommentsandAuthorInfo.forEach {
                                     if (it.userId == author.id) it.authorInfo = author
@@ -179,6 +189,9 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
 
                             viewModel.commentsFromAPost.observe(viewLifecycleOwner, Observer {allcommentInfo->
 
+                                println("COMMENTS GOTTEN ${allcommentInfo}")
+                                Log.d("COMMENTS GOTTEN"," ${allcommentInfo}")
+
                                 allcommentInfo.forEach {oneCommentInfo->
 
                                     postsWithCommentsandAuthorInfo.forEach { onePost->
@@ -204,8 +217,9 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
 
     fun fetchCommentsAndAuthorInfo(userId:String, postId:String){
 
-        if (!userId.isEmpty())viewModel.getAuthorInfo(userId)
-        if (!postId.isEmpty())viewModel.getComments(postId)
+     if (!userId.isNullOrEmpty())viewModel.getAuthorInfo(userId)
+     if (!postId.isNullOrEmpty()) viewModel.getComments(postId)
+
 
     }
 

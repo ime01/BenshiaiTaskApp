@@ -8,4 +8,5 @@
     <string name="name">Title</string>
     <string name="error">Error</string>
     <string name="welcome_text">Displaying a list of Posts from Api here https://jsonplaceholder.typicode.com/posts</string>
+    <string name="ensure_internet">No internet connection, Ensure you have a stable internet connection and try again</string>
 </resources>
