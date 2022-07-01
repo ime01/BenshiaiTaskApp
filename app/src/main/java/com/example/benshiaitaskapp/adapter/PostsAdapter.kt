@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.ListAdapter
 import com.example.benshiaitaskapp.R
-import com.example.benshiaitaskapp.databinding.CarListItemBinding
 import com.example.benshiaitaskapp.data.model.Post
+import com.example.benshiaitaskapp.databinding.PostListItemBinding
 
 
 typealias urlListener = (item: Post) -> Unit
@@ -18,9 +18,9 @@ class PostsAdapter  (val listener: urlListener)  :ListAdapter<Post, PostsAdapter
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
 
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.car_list_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.post_list_item, parent, false)
 
-        return ImageViewHolder(CarListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)) {
+        return ImageViewHolder(PostListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)) {
             getItem(it)?.let{item-> listener(item)}
         }
 
@@ -33,9 +33,20 @@ class PostsAdapter  (val listener: urlListener)  :ListAdapter<Post, PostsAdapter
         holder.binding.apply {
 
             holder.itemView.apply {
-                userName.text = "Title: ${currentItem.title?.take(20)}"
+                title.text = "Title: ${currentItem.title?.take(20)}"
                 body.text = "Body: ${currentItem.body?.take(100)}"
-                //fuelLevel.text = "Post id: ${currentItem.id}"
+                if (currentItem.authorInfo?.name.isNullOrEmpty()){
+                    authorName.text = "John doe"
+                }else{
+                    authorName.text = currentItem?.authorInfo?.name
+                }
+
+                if (currentItem.commentInfo.isNullOrEmpty()){
+                    totalComments.text = "0"
+                }else{
+                    totalComments.text = currentItem?.commentInfo?.size.toString()
+                }
+
 
               /*  val imageLink = currentItem?.carImageUrl
 
@@ -49,7 +60,7 @@ class PostsAdapter  (val listener: urlListener)  :ListAdapter<Post, PostsAdapter
         }
     }
 
-    inner class ImageViewHolder(val binding: CarListItemBinding, private val listener: (Int)-> Unit): RecyclerView.ViewHolder(binding.root){
+    inner class ImageViewHolder(val binding: PostListItemBinding, private val listener: (Int)-> Unit): RecyclerView.ViewHolder(binding.root){
 
         init {
             binding.root.setOnClickListener {

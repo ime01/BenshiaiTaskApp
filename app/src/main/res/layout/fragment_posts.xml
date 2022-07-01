@@ -36,7 +36,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:listitem="@layout/car_list_item" />
+        tools:listitem="@layout/post_list_item" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/error_image"

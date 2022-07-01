@@ -30,7 +30,7 @@
             app:srcCompat="@drawable/ic_baseline_chat_24" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/user_name"
+            android:id="@+id/title"
             style="@style/UserNameStyle"
             android:fontFamily="@font/almendra"
             android:textStyle="bold|italic"
@@ -52,14 +52,14 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="post author"
+            android:text="body"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/image_thumbail"
-            app:layout_constraintTop_toBottomOf="@+id/user_name" />
+            app:layout_constraintTop_toBottomOf="@+id/title" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/fuel_level"
+            android:id="@+id/author_name"
             style="@style/TagsStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,9 +67,34 @@
             android:layout_marginTop="8dp"
             app:layout_constraintHorizontal_bias="0.0"
             android:fontFamily="@font/almendra"
-            android:text="comments"
+            android:text="Author Name"
             android:textStyle="italic"
             app:layout_constraintStart_toEndOf="@+id/image_thumbail"
             app:layout_constraintTop_toBottomOf="@+id/body" />
+
+
+
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/total_comments"
+            style="@style/TagsStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:fontFamily="@font/almendra"
+            android:text="0"
+            android:textStyle="italic"
+            app:layout_constraintStart_toEndOf="@+id/comments_icon"
+            app:layout_constraintTop_toTopOf="@+id/comments_icon"
+            app:layout_constraintBottom_toBottomOf="@id/comments_icon"/>
+
+        <ImageView
+            android:id="@+id/comments_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/author_name"
+            app:srcCompat="@drawable/ic_baseline_chat_24"
+            app:layout_constraintStart_toStartOf="@+id/author_name"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
