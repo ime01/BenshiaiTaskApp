@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
@@ -41,7 +42,7 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
     private var errorMessage: String? = null
     lateinit var postsAdapter  : PostsAdapter
     lateinit var snapHelper: SnapHelper
-    private var postsWithCommentsandAuthorInfo = mutableListOf<Post>()
+    private var postsWithCommentsandAuthorInfo = MutableLiveData<List<Post>>()
 
 
     private val viewModel: PostsListViewModel by activityViewModels()
@@ -54,11 +55,7 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
 
         showWelcomeMarqueeText()
 
-        if (getConnectionType(requireContext())) {
-            if (postsWithCommentsandAuthorInfo.isNullOrEmpty())viewModel.getPosts()
-        } else {
-            showSnackbar(binding.rvList,  getString(R.string.ensure_internet))
-        }
+        if (postsWithCommentsandAuthorInfo.value.isNullOrEmpty()) viewModel.getPosts()
 
 
         postsAdapter = PostsAdapter{
@@ -106,15 +103,20 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
                         PostsApiStatus.DONE -> {
 
                             viewModel.postsFromNetwork.observe(viewLifecycleOwner, Observer {
-                                postsWithCommentsandAuthorInfo.addAll(it)
+                                postsWithCommentsandAuthorInfo.postValue(it)
 
                                 loadRecyclerView(it)
                             })
 
-                            postsWithCommentsandAuthorInfo.forEach {
-                                fetchCommentsAndAuthorInfo(it.userId.toString(), it.id.toString() )
-                                Toast.makeText(requireContext(), "COMMENTS FETCHED", Toast.LENGTH_SHORT).show()
-                            }
+
+                            postsWithCommentsandAuthorInfo.observe(viewLifecycleOwner, Observer {
+
+                                it.forEach {
+                                    fetchCommentsAndAuthorInfo(it.userId.toString(), it.id.toString() )
+                                    Toast.makeText(requireContext(), "COMMENTS FETCHED", Toast.LENGTH_SHORT).show()
+                                }
+
+                            })
 
                         }
 
@@ -149,9 +151,12 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
                                 println("Author Gotten ${author}")
                                 Log.d("Author Gotten"," ${author}")
 
-                                postsWithCommentsandAuthorInfo.forEach {
-                                    if (it.userId == author.id) it.authorInfo = author
-                                }
+                                postsWithCommentsandAuthorInfo.observe(viewLifecycleOwner, Observer {
+
+                                    it.forEach {
+                                        if (it.userId == author.id) it.authorInfo = author
+                                    }
+                                })
 
                             })
 
@@ -194,12 +199,13 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
 
                                 allcommentInfo.forEach {oneCommentInfo->
 
-                                    postsWithCommentsandAuthorInfo.forEach { onePost->
-                                        if (onePost.id == oneCommentInfo.postId) onePost.commentInfo = allcommentInfo
-                                    }
+                                    postsWithCommentsandAuthorInfo.observe(viewLifecycleOwner, Observer {
+
+                                        it.forEach {onePost->
+                                            if (onePost.id == oneCommentInfo.postId) onePost.commentInfo = allcommentInfo
+                                        }
+                                    })
                                 }
-
-
 
                             })
 
@@ -228,7 +234,11 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
         observeFetchAuthorInfoState()
         observeFetchCommentsState()
         getErrorMessage()
-        loadRecyclerView(postsWithCommentsandAuthorInfo)
+
+        postsWithCommentsandAuthorInfo.observe(viewLifecycleOwner, Observer {
+            loadRecyclerView(it)
+        })
+
     }
 
 
