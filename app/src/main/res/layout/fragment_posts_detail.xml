@@ -35,7 +35,7 @@
                 app:srcCompat="@drawable/people_talking" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/duser_name"
+                android:id="@+id/d_title"
                 style="@style/UserNameStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -43,14 +43,14 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="8dp"
                 android:fontFamily="@font/almendra"
-                android:text=""
+                android:text="TextView"
                 android:textStyle="bold|italic"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/image_detail_large" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/dinner_cleanliness"
+                android:id="@+id/d_body"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -63,14 +63,14 @@
                 android:textStyle="bold|italic"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/duser_name" />
+                app:layout_constraintTop_toBottomOf="@id/d_title" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/dmodel_name"
+                android:id="@+id/d_author_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
                 android:fontFamily="@font/almendra"
                 android:text="TextView"
@@ -79,10 +79,10 @@
                 android:textStyle="bold|italic"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dinner_cleanliness" />
+                app:layout_constraintTop_toBottomOf="@id/d_body" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/dseries"
+                android:id="@+id/d_author_email"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -95,10 +95,10 @@
                 android:textStyle="bold|italic"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dmodel_name" />
+                app:layout_constraintTop_toBottomOf="@id/d_author_name" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/dmake"
+                android:id="@+id/d_author_phone"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -111,10 +111,10 @@
                 android:textStyle="bold|italic"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dseries" />
+                app:layout_constraintTop_toBottomOf="@id/d_author_email" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/dlongitude"
+                android:id="@+id/d_author_website"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -127,7 +127,22 @@
                 android:textStyle="bold|italic"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dmake" />
+                app:layout_constraintTop_toBottomOf="@id/d_author_phone" />
+
+
+
+            <fragment
+                android:id="@+id/google_map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/d_author_website"
+                app:layout_constraintVertical_bias="1.0" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/dlatitude"
@@ -143,7 +158,7 @@
                 android:textStyle="bold|italic"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dlongitude" />
+                app:layout_constraintTop_toBottomOf="@id/google_map" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/dgroup"

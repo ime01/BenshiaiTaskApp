@@ -41,7 +41,6 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
     private val binding get() = _binding!!
     private var errorMessage: String? = null
     lateinit var postsAdapter  : PostsAdapter
-    lateinit var snapHelper: SnapHelper
     private var postsWithCommentsandAuthorInfo = MutableLiveData<List<Post>>()
 
 
@@ -61,8 +60,6 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
         postsAdapter = PostsAdapter{
             transitionToDetailView(it)
         }
-        snapHelper  = LinearSnapHelper()
-        snapHelper.attachToRecyclerView(binding.rvList)
 
         setObservers()
     }

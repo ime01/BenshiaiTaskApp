@@ -9,14 +9,24 @@ import com.bumptech.glide.Glide
 import com.example.benshiaitaskapp.R
 import com.example.benshiaitaskapp.data.model.Post
 import com.example.benshiaitaskapp.databinding.FragmentPostsDetailBinding
+import com.example.benshiaitaskapp.utils.HashUtils
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail) {
+class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail), OnMapReadyCallback {
 
     private var _binding: FragmentPostsDetailBinding? = null
     private val binding get() = _binding!!
     private var post: Post? = null
+    private var userLocation: LatLng? = null
+    private lateinit var mMap: GoogleMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,31 +42,66 @@ class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail) {
 
         _binding = FragmentPostsDetailBinding.bind(view)
 
+        if (post?.authorInfo != null){
+            post?.authorInfo?.address?.geo?.let {
+                userLocation = LatLng(it.lat?.toDouble()!!, it.lng?.toDouble()!!)
+            }
+        }else{
+            //assign default location of Benshai office in spain
+            userLocation = LatLng(41.393630, 2.163590)
+        }
+
+        val mapFragment = childFragmentManager.findFragmentById(R.id.google_map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
+
         binding.apply {
 
             post?.apply {
 
-                duserName.text = "Title :  ${title}"
-                dinnerCleanliness.text = "UserId :  ${userId}"
-                dseries.text = "Id :  ${id}"
+                dTitle.text = "Title :  ${title}"
+                dBody.text = "Body :  ${body}"
+                dAuthorName.text = if (!authorInfo?.name.isNullOrEmpty()) "Author Name:  ${authorInfo?.name}" else "no author info yet"
+                dAuthorEmail.text = if (!authorInfo?.email.isNullOrEmpty()) "Authorr Email:  ${authorInfo?.email}" else "no author info yet"
+                dAuthorWebsite.text = if (!authorInfo?.website.isNullOrEmpty()) "Authorr Website:  ${authorInfo?.website}" else "no author info yet"
+                dAuthorPhone.text = if (!authorInfo?.phone.isNullOrEmpty()) "Authorr Phone:  ${authorInfo?.phone}" else "no author info yet"
 
-                dmodelName.text = "Total Comments :  ${commentInfo?.size}"
-                dmake.text = "Author Name :  ${authorInfo?.name}"
 
-              /*  dlongitude.text = "Longitude :  ${longitude}"
-                dlatitude.text = "Latitude :  ${latitude}"
-                dgroup.text = "Group :  ${group}"
-                dfuelLevel.text = "Fuel Level :  ${fuelLevel}"*/
+
+
+                val imageLink = title
+                val hashedLinkForSeed = imageLink?.let { HashUtils.sha256(it) }
+                val getImageUrl = "https://picsum.photos/seed/$hashedLinkForSeed/200/200"
+
+
+
+                   Glide.with(imageDetailLarge)
+                       .load(getImageUrl)
+                       .placeholder(R.drawable.ic_baseline_chat_24)
+                       .error(R.drawable.ic_baseline_error_outline_24)
+                       .fallback(R.drawable.ic_baseline_chat_24)
+                       .into(imageDetailLarge)
+
             }
 
+        }
 
-         /*   Glide.with(imageDetailLarge)
-                .load(car?.carImageUrl)
-                .placeholder(R.drawable.bmw)
-                .error(R.drawable.bmw)
-                .fallback(R.drawable.bmw)
-                .into(imageDetailLarge)*/
 
+    }
+
+
+    override fun onMapReady(gmap: GoogleMap) {
+        if (gmap != null) {
+            mMap = gmap
+        }
+
+        if (post?.authorInfo != null){
+            mMap.addMarker(
+                MarkerOptions()
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+
+                    .position(LatLng( userLocation?.latitude!!, userLocation?.longitude!!)).title("Author  ${post?.authorInfo?.name} is here"))
+
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng( userLocation?.latitude!!, userLocation?.longitude!!), 20F), 4000, null)
 
         }
 
@@ -65,14 +110,12 @@ class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail) {
 
 
 
-
-
-
-
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
     }
+
+
 
 
 }

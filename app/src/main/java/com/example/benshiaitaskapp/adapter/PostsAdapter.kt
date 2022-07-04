@@ -55,10 +55,8 @@ class PostsAdapter  (val listener: urlListener)  :ListAdapter<Post, PostsAdapter
                 val hashedLinkForSeed = imageLink?.let { sha256(it) }
                 val getImageUrl = "https://picsum.photos/seed/$hashedLinkForSeed/200/200"
 
-                println("HASHED VALUE :  $hashedLinkForSeed")
-
                 imageThumbail.load(getImageUrl){
-                    error(R.drawable.ic_baseline_chat_24)
+                    error(R.drawable.ic_baseline_error_outline_24)
                     placeholder(R.drawable.ic_baseline_chat_24)
                     crossfade(true)
                     crossfade(1000)
