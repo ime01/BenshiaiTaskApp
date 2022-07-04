@@ -1,10 +1,10 @@
 package com.example.benshiaitaskapp.ui.details
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.benshiaitaskapp.R
 import com.example.benshiaitaskapp.data.model.Post
@@ -18,6 +18,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
+
+
 
 @AndroidEntryPoint
 class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail), OnMapReadyCallback {
@@ -65,7 +67,15 @@ class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail), OnMapReady
                 dAuthorWebsite.text = if (!authorInfo?.website.isNullOrEmpty()) "Authorr Website:  ${authorInfo?.website}" else "no author info yet"
                 dAuthorPhone.text = if (!authorInfo?.phone.isNullOrEmpty()) "Authorr Phone:  ${authorInfo?.phone}" else "no author info yet"
 
-
+                dAuthorPhone.setOnClickListener {
+                    post?.authorInfo?.phone?.let { it1 -> dialAuthorNumber(it1) }
+                }
+                dAuthorEmail.setOnClickListener {
+                    post?.authorInfo?.email?.let { it1 -> sendEmail(it1) }
+                }
+                dAuthorWebsite.setOnClickListener {
+                    post?.authorInfo?.website?.let { it1 -> openWebsite(it1) }
+                }
 
 
                 val imageLink = title
@@ -86,6 +96,25 @@ class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail), OnMapReady
         }
 
 
+    }
+
+    private fun dialAuthorNumber(contactNumber: String) {
+        val callNcdc = Intent(Intent.ACTION_DIAL)
+        callNcdc.data = Uri.parse("tel:$contactNumber")
+        startActivity(callNcdc)
+        return
+    }
+
+    fun sendEmail(address: String?) {
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.data = Uri.parse("mailto:$address")
+        intent.type = "text/plain"
+        startActivity(Intent.createChooser(intent, "Select your Email app"))
+    }
+
+    fun openWebsite(address: String?){
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.$address"))
+        startActivity(browserIntent)
     }
 
 
