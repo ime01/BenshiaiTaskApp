@@ -132,6 +132,7 @@ class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail), OnMapReady
         }else{
             binding.apply {
                 errorText.isVisible = false
+                progressBar.toggleVisibility(false)
             }
 
         }
