@@ -4,12 +4,20 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.LinearLayout
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.benshiaitaskapp.R
+import com.example.benshiaitaskapp.adapter.CommentsAdapter
+import com.example.benshiaitaskapp.adapter.PostsAdapter
 import com.example.benshiaitaskapp.data.model.Post
+import com.example.benshiaitaskapp.data.model.comments.CommentInfo
 import com.example.benshiaitaskapp.databinding.FragmentPostsDetailBinding
 import com.example.benshiaitaskapp.utils.HashUtils
+import com.example.benshiaitaskapp.utils.toggleVisibility
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -28,6 +36,7 @@ class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail), OnMapReady
     private val binding get() = _binding!!
     private var post: Post? = null
     private var userLocation: LatLng? = null
+    lateinit var commentsAdapter  : CommentsAdapter
     private lateinit var mMap: GoogleMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +61,12 @@ class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail), OnMapReady
             //assign default location of Benshai office in spain
             userLocation = LatLng(41.393630, 2.163590)
         }
+
+        commentsAdapter = CommentsAdapter{
+            clicked(it)
+        }
+
+        post?.commentInfo?.let { loadComments(it) }
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.google_map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -83,7 +98,6 @@ class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail), OnMapReady
                 val getImageUrl = "https://picsum.photos/seed/$hashedLinkForSeed/200/200"
 
 
-
                    Glide.with(imageDetailLarge)
                        .load(getImageUrl)
                        .placeholder(R.drawable.ic_baseline_chat_24)
@@ -94,6 +108,34 @@ class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail), OnMapReady
             }
 
         }
+
+
+    }
+
+    private fun clicked(it: CommentInfo) {
+
+    }
+
+    private fun loadComments(comments: List<CommentInfo>) {
+
+        if (!comments.isNullOrEmpty()){
+            binding.apply {
+                errorText.isVisible = false
+                commentsAdapter.submitList(comments)
+                rvComments.layoutManager = LinearLayoutManager(requireContext())
+                rvComments.adapter = commentsAdapter
+                val decoration = DividerItemDecoration(requireContext(), LinearLayout.VERTICAL)
+                rvComments.addItemDecoration(decoration)
+                progressBar.toggleVisibility(false)
+
+            }
+        }else{
+            binding.apply {
+                errorText.isVisible = false
+            }
+
+        }
+
 
 
     }
