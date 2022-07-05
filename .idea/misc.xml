@@ -7,6 +7,7 @@
         <entry key="app/src/main/res/drawable/ic_baseline_chat_24.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_person_pin_circle_24.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_settings_applications_24.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/splash_screen.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.225" />
         <entry key="app/src/main/res/layout/car_list_item.xml" value="0.25" />
         <entry key="app/src/main/res/layout/comment_list_item.xml" value="0.24947916666666667" />

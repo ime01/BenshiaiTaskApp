@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.benshiaitaskapp.R
@@ -32,7 +33,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
     lateinit var dataStoreManager: DataStoreManager
-    private val viewModel: PostsListViewModel by activityViewModels()
 
     private val Context.userPreferencesDataStore: DataStore<Preferences> by preferencesDataStore(
         name = "user"
