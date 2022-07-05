@@ -1,12 +1,22 @@
 package com.example.benshiaitaskapp.ui.details
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -16,6 +26,9 @@ import com.example.benshiaitaskapp.adapter.PostsAdapter
 import com.example.benshiaitaskapp.data.model.Post
 import com.example.benshiaitaskapp.data.model.comments.CommentInfo
 import com.example.benshiaitaskapp.databinding.FragmentPostsDetailBinding
+import com.example.benshiaitaskapp.preference.DataStoreManager
+import com.example.benshiaitaskapp.utils.Constants.DATASTORENAME
+import com.example.benshiaitaskapp.utils.Constants.SAVE_EMAIL_KEY
 import com.example.benshiaitaskapp.utils.HashUtils
 import com.example.benshiaitaskapp.utils.toggleVisibility
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -26,9 +39,13 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 
-
-
+@OptIn(InternalCoroutinesApi::class)
 @AndroidEntryPoint
 class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail), OnMapReadyCallback {
 
@@ -36,6 +53,8 @@ class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail), OnMapReady
     private val binding get() = _binding!!
     private var post: Post? = null
     private var userLocation: LatLng? = null
+    private var userEmailToSendData: String? = "useremail@gmail.com"
+    lateinit var dataStoreManager: DataStoreManager
     lateinit var commentsAdapter  : CommentsAdapter
     private lateinit var mMap: GoogleMap
 
@@ -52,6 +71,7 @@ class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail), OnMapReady
         super.onViewCreated(view, savedInstanceState)
 
         _binding = FragmentPostsDetailBinding.bind(view)
+        dataStoreManager = DataStoreManager(requireActivity())
 
         if (post?.authorInfo != null){
             post?.authorInfo?.address?.geo?.let {
@@ -65,6 +85,18 @@ class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail), OnMapReady
         commentsAdapter = CommentsAdapter{
             clicked(it)
         }
+       // userEmailToSendData = readSavedUserEmail()
+        lifecycleScope.launch(Dispatchers.IO){
+
+            dataStoreManager.getFromDataStore().catch { e ->
+                e.printStackTrace()
+            }.collect {
+                withContext(Dispatchers.Main) {
+                    userEmailToSendData = it.email
+                }
+            }
+        }
+        Toast.makeText(requireContext(), "EMAIL IS ${userEmailToSendData}", Toast.LENGTH_LONG).show()
 
         post?.commentInfo?.let { loadComments(it) }
 
@@ -108,8 +140,6 @@ class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail), OnMapReady
             }
 
         }
-
-
     }
 
     private fun clicked(it: CommentInfo) {
@@ -126,13 +156,13 @@ class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail), OnMapReady
                 rvComments.adapter = commentsAdapter
                 val decoration = DividerItemDecoration(requireContext(), LinearLayout.VERTICAL)
                 rvComments.addItemDecoration(decoration)
-                progressBar.toggleVisibility(false)
+                progressBar1.toggleVisibility(false)
 
             }
         }else{
             binding.apply {
                 errorText.isVisible = false
-                progressBar.toggleVisibility(false)
+                progressBar1.toggleVisibility(false)
             }
 
         }
@@ -161,6 +191,24 @@ class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail), OnMapReady
     }
 
 
+
+    fun readSavedUserEmail():String{
+        var userEmail = ""
+
+        lifecycleScope.launch(Dispatchers.IO){
+
+            dataStoreManager.getFromDataStore().catch { e ->
+                e.printStackTrace()
+            }.collect {
+                withContext(Dispatchers.Main) {
+                    userEmail = it.email
+                }
+            }
+        }
+
+        return userEmail
+    }
+
     override fun onMapReady(gmap: GoogleMap) {
         if (gmap != null) {
             mMap = gmap
@@ -173,14 +221,12 @@ class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail), OnMapReady
 
                     .position(LatLng( userLocation?.latitude!!, userLocation?.longitude!!)).title("Author  ${post?.authorInfo?.name} is here"))
 
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng( userLocation?.latitude!!, userLocation?.longitude!!), 20F), 4000, null)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng( userLocation?.latitude!!, userLocation?.longitude!!), 12.5F), 6000, null)
 
         }
 
 
     }
-
-
 
     override fun onDestroy() {
         super.onDestroy()

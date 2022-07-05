@@ -3,6 +3,9 @@ package com.example.benshiaitaskapp.ui.list
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.LinearLayout
@@ -13,6 +16,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
@@ -27,6 +31,7 @@ import com.example.benshiaitaskapp.presentation.AuthorApiStatus
 import com.example.benshiaitaskapp.presentation.CommentsApiStatus
 import com.example.benshiaitaskapp.presentation.PostsApiStatus
 import com.example.benshiaitaskapp.presentation.PostsListViewModel
+import com.example.benshiaitaskapp.ui.details.PostsDetailFragmentArgs
 import com.example.benshiaitaskapp.utils.getConnectionType
 import com.example.benshiaitaskapp.utils.showSnackbar
 import com.example.benshiaitaskapp.utils.toggleVisibility
@@ -46,6 +51,10 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
 
     private val viewModel: PostsListViewModel by activityViewModels()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -274,6 +283,23 @@ class PostsFragment : Fragment(R.layout.fragment_posts) {
 
         }
 
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu1_layout, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+
+            R.id.settings_view ->{
+                findNavController().navigate(R.id.action_postsFragment_to_settingsFragment)
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
 

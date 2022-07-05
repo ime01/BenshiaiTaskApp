@@ -9,4 +9,9 @@
     <string name="error">Error</string>
     <string name="welcome_text">Displaying a list of Posts from Api here https://jsonplaceholder.typicode.com/posts</string>
     <string name="ensure_internet">No internet connection, Ensure you have a stable internet connection and try again</string>
+    <string name="settings_view">Settings View</string>
+    <string name="email">Enter your email</string>
+    <string name="enter_valid_input">Enter default email address to receive data</string>
+    <string name="email_saved">Email to receive the user data saved</string>
+    <string name="enter_valid_email">Enter a valid email address</string>
 </resources>

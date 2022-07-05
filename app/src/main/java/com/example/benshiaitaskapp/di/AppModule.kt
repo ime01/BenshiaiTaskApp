@@ -10,6 +10,7 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -59,6 +60,7 @@ object AppModule {
     fun providesPostsRepository(api: ApiServiceCalls): PostsRepository {
         return PostRepositoryImpl(api)
     }
+
 
 
 

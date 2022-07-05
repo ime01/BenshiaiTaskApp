@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
 import java.security.MessageDigest
 
 
@@ -27,6 +28,10 @@ fun View?.toggleVisibility(show: Boolean){
         if(this?.visibility == View.VISIBLE)
             this.visibility = View.GONE
     }
+}
+
+fun TextInputEditText.takeWords() : String{
+    return this.text.toString().trim()
 }
 
 

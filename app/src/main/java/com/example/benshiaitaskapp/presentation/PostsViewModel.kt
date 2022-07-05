@@ -1,5 +1,6 @@
 package com.example.benshiaitaskapp.presentation
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,6 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
+import java.nio.file.attribute.UserPrincipal
 
 import javax.inject.Inject
 
@@ -126,5 +128,9 @@ class PostsListViewModel @Inject constructor(
                 }
             }.launchIn(viewModelScope)
         }
+
+
+
+
 
 }
