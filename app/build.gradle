@@ -124,9 +124,16 @@ dependencies {
     //map
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
 
+    //DataStore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
-//  Facebook shimmer effect
+    //Facebook shimmer effect
     implementation "com.facebook.shimmer:shimmer:0.5.0@aar"
+
+    //Send email in background
+   // implementation 'com.github.yesidlazaro:GmailBackground:1.2.0'
+
+
 
 }
 

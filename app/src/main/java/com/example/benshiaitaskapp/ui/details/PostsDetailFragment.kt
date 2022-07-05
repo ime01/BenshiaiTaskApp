@@ -1,34 +1,25 @@
 package com.example.benshiaitaskapp.ui.details
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.benshiaitaskapp.R
 import com.example.benshiaitaskapp.adapter.CommentsAdapter
-import com.example.benshiaitaskapp.adapter.PostsAdapter
+import com.example.benshiaitaskapp.data.model.CollectedData
 import com.example.benshiaitaskapp.data.model.Post
+import com.example.benshiaitaskapp.data.model.UserMetaData
 import com.example.benshiaitaskapp.data.model.comments.CommentInfo
 import com.example.benshiaitaskapp.databinding.FragmentPostsDetailBinding
 import com.example.benshiaitaskapp.preference.DataStoreManager
-import com.example.benshiaitaskapp.utils.Constants.DATASTORENAME
-import com.example.benshiaitaskapp.utils.Constants.SAVE_EMAIL_KEY
 import com.example.benshiaitaskapp.utils.HashUtils
 import com.example.benshiaitaskapp.utils.toggleVisibility
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -40,10 +31,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.collect
 
 @OptIn(InternalCoroutinesApi::class)
 @AndroidEntryPoint
@@ -85,7 +74,8 @@ class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail), OnMapReady
         commentsAdapter = CommentsAdapter{
             clicked(it)
         }
-       // userEmailToSendData = readSavedUserEmail()
+        
+       // get Saved User Email From Settings Fragment and send background mail with simulated collected data
         lifecycleScope.launch(Dispatchers.IO){
 
             dataStoreManager.getFromDataStore().catch { e ->
@@ -93,10 +83,10 @@ class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail), OnMapReady
             }.collect {
                 withContext(Dispatchers.Main) {
                     userEmailToSendData = it.email
+                    sendDataCollectedEmail(userEmailToSendData!!)
                 }
             }
         }
-        Toast.makeText(requireContext(), "EMAIL IS ${userEmailToSendData}", Toast.LENGTH_LONG).show()
 
         post?.commentInfo?.let { loadComments(it) }
 
@@ -142,9 +132,20 @@ class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail), OnMapReady
         }
     }
 
-    private fun clicked(it: CommentInfo) {
+    private fun sendDataCollectedEmail(userEmailToSendData: String) {
+     val sampleCollectedData = CollectedData(
+         appId = "123456",
+         action = "open",
+         resourceId = "detailsSC",
+         userId = "Tester1",
+         meta = UserMetaData(time = "02:10am", location = LatLng(25.04, 4.02))
+
+     )
+        //send message
 
     }
+
+
 
     private fun loadComments(comments: List<CommentInfo>) {
 
@@ -188,6 +189,9 @@ class PostsDetailFragment : Fragment(R.layout.fragment_posts_detail), OnMapReady
     fun openWebsite(address: String?){
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.$address"))
         startActivity(browserIntent)
+    }
+    private fun clicked(it: CommentInfo) {
+
     }
 
 
